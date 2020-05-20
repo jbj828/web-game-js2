@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minesweeper</title>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      td {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="hor" type="number" placeholder="horizontal" value="10" />
+    <input id="ver" type="number" placeholder="vertical" value="10" />
+    <input id="mine" type="number" placeholder="mine" value="20" />
+    <button id="exec">Run</button>
+    <table id="table">
+      <thead>
+        <tr>
+          <td><span id="timer">0</span>s</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script src="./minesweeper.js"></script>
+  </body>
+</html>
