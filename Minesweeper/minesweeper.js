@@ -35,11 +35,52 @@ function insertMine(arr) {
     let horizontal = arr[i] % 10;
     console.log(vertical, horizontal);
     tbody.children[vertical].children[horizontal].textContent = "X";
-    dataSet[vertical][horizontal];
+    dataSet[vertical][horizontal] = "X";
   }
 }
 
+function makeDifficultMark(e) {
+  e.preventDefault();
+  let parentTr = e.currentTarget.parentNode;
+  let parentTbody = e.currentTarget.parentNode.parentNode;
+  let selectedRoom = Array.prototype.indexOf.call(
+    parentTr.children,
+    e.currentTarget
+  );
+  let selectedLine = Array.prototype.indexOf.call(
+    parentTbody.children,
+    parentTr
+  );
+  console.log(
+    parentTr,
+    parentTbody,
+    e.currentTarget,
+    selectedRoom,
+    selectedLine
+  );
+
+  if (
+    e.currentTarget.textContent === "" ||
+    e.currentTarget.textContent === "X"
+  ) {
+    e.currentTarget.textContent = "!";
+  } else if (e.currentTarget.textContent === "!") {
+    e.currentTarget.textContent = "?";
+  } else if (e.currentTarget.textContent === "?") {
+    if (dataSet[selectedLine][selectedRoom] === 1) {
+      e.currentTarget.textContent = "";
+    } else if (dataSet[selectedLine][selectedRoom] === "X") {
+      e.currentTarget.textContent = "X";
+    }
+  }
+}
+
+function handleRightClick(element) {
+  element.addEventListener("contextmenu", makeDifficultMark);
+}
+
 function generateMinesweeper() {
+  tbody.textContent = "";
   width = parseInt(ver.value);
   height = parseInt(hor.value);
   for (let i = 0; i < width; i++) {
@@ -57,19 +98,22 @@ function generateMinesweeper() {
   getNumberForMine();
 }
 
-function makeDifficultMark(e) {
-  e.preventDefault();
-  console.log("click right");
-}
-
-function handleRightClick(element) {
-  element.addEventListener("contextmenu", makeDifficultMark);
-}
-
 function init() {
   button.addEventListener("click", generateMinesweeper);
 }
 
 init();
 
-ddddd;
+var cbExample = function (number, cb) {
+  setTimeout(() => {
+    var sum = 0;
+    for (var i = number; i > 0; i--) {
+      sum += 1;
+    }
+    cb(sum);
+  }, 0);
+};
+
+cbExample(10, function (result) {
+  console.log(result);
+});
