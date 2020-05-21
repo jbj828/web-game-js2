@@ -11,13 +11,11 @@ let numberOfMines = parseInt(mine.value);
 
 function getNumberForMine() {
   let shuffledNums = [];
-
   let candidateNums = Array(width * height)
     .fill()
     .map((value, index) => {
       return index;
     });
-
   while (candidateNums.length > 80) {
     let selectedNum = candidateNums.splice(
       Math.floor(Math.random() * candidateNums.length),
@@ -75,8 +73,51 @@ function makeDifficultMark(e) {
   }
 }
 
+function activateLeftClick(e) {
+  // number of mines around the spot which was clicked
+  let parentTr = e.currentTarget.parentNode;
+  let parentTbody = e.currentTarget.parentNode.parentNode;
+  let selectedRoom = Array.prototype.indexOf.call(
+    parentTr.children,
+    e.currentTarget
+  );
+  let selectedLine = Array.prototype.indexOf.call(
+    parentTbody.children,
+    parentTr
+  );
+  if (dataSet[selectedLine][selectedRoom] === "X") {
+    e.currentTarget.textContent = "Ep";
+  } else {
+    var around = [
+      dataSet[selectedLine][selectedRoom - 1],
+      dataSet[selectedLine][selectedRoom + 1],
+    ];
+    if (dataSet[selectedLine - 1]) {
+      around = around.concat([
+        dataSet[selectedLine - 1][selectedRoom - 1],
+        dataSet[selectedLine - 1][selectedRoom],
+        dataSet[selectedLine - 1][selectedRoom + 1],
+      ]);
+    }
+    if (dataSet[selectedLine + 1]) {
+      around = around.concat([
+        dataSet[selectedLine + 1][selectedRoom - 1],
+        dataSet[selectedLine + 1][selectedRoom],
+        dataSet[selectedLine + 1][selectedRoom + 1],
+      ]);
+    }
+    e.currentTarget.textContent = around.filter((v) => {
+      return v === "X";
+    }).length;
+  }
+}
+
 function handleRightClick(element) {
   element.addEventListener("contextmenu", makeDifficultMark);
+}
+
+function handleLeftClick(element) {
+  element.addEventListener("click", activateLeftClick);
 }
 
 function generateMinesweeper() {
@@ -90,6 +131,7 @@ function generateMinesweeper() {
       dataSet[i][j] = 1;
       let td = document.createElement("td");
       handleRightClick(td);
+      handleLeftClick(td);
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
@@ -103,17 +145,3 @@ function init() {
 }
 
 init();
-
-var cbExample = function (number, cb) {
-  setTimeout(() => {
-    var sum = 0;
-    for (var i = number; i > 0; i--) {
-      sum += 1;
-    }
-    cb(sum);
-  }, 0);
-};
-
-cbExample(10, function (result) {
-  console.log(result);
-});
