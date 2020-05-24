@@ -75,6 +75,7 @@ function makeDifficultMark(e) {
 
 function activateLeftClick(e) {
   // number of mines around the spot which was clicked
+  e.currentTarget.classList.add("opened");
   let parentTr = e.currentTarget.parentNode;
   let parentTbody = e.currentTarget.parentNode.parentNode;
   let selectedRoom = Array.prototype.indexOf.call(
@@ -88,6 +89,7 @@ function activateLeftClick(e) {
   if (dataSet[selectedLine][selectedRoom] === "X") {
     e.currentTarget.textContent = "Ep";
   } else {
+    dataSet[selectedLine][selectedRoom] = 1;
     var around = [
       dataSet[selectedLine][selectedRoom - 1],
       dataSet[selectedLine][selectedRoom + 1],
@@ -106,9 +108,51 @@ function activateLeftClick(e) {
         dataSet[selectedLine + 1][selectedRoom + 1],
       ]);
     }
-    e.currentTarget.textContent = around.filter((v) => {
+    let numberOfMines = around.filter((v) => {
       return v === "X";
     }).length;
+    e.currentTarget.textContent = numberOfMines;
+    // open the room around it
+    if (numberOfMines === 0) {
+      let roomsAround = [];
+      if (tbody.children[selectedLine - 1]) {
+        roomsAround = roomsAround.concat([
+          tbody.children[selectedLine - 1].children[selectedRoom - 1],
+          tbody.children[selectedLine - 1].children[selectedRoom],
+          tbody.children[selectedLine - 1].children[selectedRoom + 1],
+        ]);
+      }
+      roomsAround = roomsAround.concat([
+        tbody.children[selectedLine].children[selectedRoom - 1],
+        tbody.children[selectedLine].children[selectedRoom + 1],
+      ]);
+
+      if (tbody.children[selectedLine + 1]) {
+        roomsAround = roomsAround.concat([
+          tbody.children[selectedLine + 1].children[selectedRoom - 1],
+          tbody.children[selectedLine + 1].children[selectedRoom],
+          tbody.children[selectedLine + 1].children[selectedRoom + 1],
+        ]);
+      }
+
+      roomsAround
+        .filter((v) => !!v)
+        .forEach((roomAround) => {
+          let parentTr = roomAround.parentNode;
+          let parentTbody = roomAround.parentNode.parentNode;
+          let nextRoom = Array.prototype.indexOf.call(
+            parentTr.children,
+            roomAround.currentTarget
+          );
+          let nextLine = Array.prototype.indexOf.call(
+            parentTbody.children,
+            parentTr
+          );
+          if (dataSet[nextLine][nextRoom] !== 1) {
+            roomAround.click();
+          }
+        });
+    }
   }
 }
 
@@ -145,5 +189,3 @@ function init() {
 }
 
 init();
-
-testing;
